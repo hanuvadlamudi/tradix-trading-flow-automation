@@ -4,8 +4,6 @@ import {
   applyNodeChanges,
   applyEdgeChanges,
   addEdge,
-  type Node,
-  type Edge,
   type OnNodesChange,
   type OnEdgesChange,
   type OnConnect,
@@ -15,17 +13,24 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
-interface nodeType{
+interface NodeType{
   data:{
     type: "trigger" | "action"
     kind : "price-trigger" | "timer-trigger" | "hyper-liquid" | "backpack" | "lighter"
   }
+  id: string , position: {x: number , y: number}
+}
+
+interface Edge{
+  id : string,
+  source : string,
+  target : string,
 }
 
 
 export default function CreateWorkFlow() {
-  const [nodes, setNodes] = useState([]);
-  const [edges, setEdges] = useState([]);
+  const [nodes, setNodes] = useState<NodeType[]>([]);
+  const [edges, setEdges] = useState<Edge[]>([]);
 
   const onNodesChange: OnNodesChange = useCallback(
     (changes: any) => setNodes((nds: any) => applyNodeChanges(changes, nds)),
