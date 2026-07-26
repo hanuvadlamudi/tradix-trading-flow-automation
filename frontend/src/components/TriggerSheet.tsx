@@ -23,6 +23,7 @@ import { TimerNodeMetaData } from "@/nodes/triggers/Timer";
 import { PriceTriggerNodeMetaData } from "@/nodes/triggers/PriceTrigger";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
+import { Zap } from "lucide-react";
 
 
 const SUPPORTED_TRIGGERS = [{
@@ -63,12 +64,29 @@ export const TriggerSheet = ({
     };
 
     return (
-        <div>
-            <Sheet >
-                <SheetTrigger render={<Button variant="outline" />}>
-                    Open
-                </SheetTrigger>
-
+        <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
+            <Sheet>
+                <div className="pointer-events-auto flex max-w-sm flex-col items-center gap-4 px-6 text-center">
+                    <div className="flex size-12 items-center justify-center rounded-full border border-border bg-card shadow-xs">
+                        <Zap className="size-5 text-foreground" />
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                        <h2 className="font-heading text-lg font-medium text-foreground">
+                            Start your workflow
+                        </h2>
+                        <p className="text-sm text-muted-foreground">
+                            Add a trigger to decide when this automation should run.
+                        </p>
+                    </div>
+                    <SheetTrigger
+                        render={
+                            <Button size="lg" className="min-w-44 shadow-xs" />
+                        }
+                    >
+                        <Zap data-icon="inline-start" className="size-4" />
+                        Add trigger
+                    </SheetTrigger>
+                </div>
 
                 <SheetContent side="right">
                     <SheetHeader>
