@@ -55,7 +55,10 @@ export const TriggerSheet = ({
                             Select a trigger for your workflow.
                         </SheetDescription>
 
-                        <Select value={selectedTrigger ?? undefined}>
+                        <Select
+                            value={selectedTrigger ?? undefined}
+                            onValueChange={(value) => setSelectedTrigger(value as NodeKind)}
+                        >
                             <SelectTrigger className="w-full">
                                 <SelectValue placeholder="Select a trigger" />
                             </SelectTrigger>
@@ -65,7 +68,6 @@ export const TriggerSheet = ({
                                         <SelectItem
                                             key={id}
                                             value={id}
-                                            onSelect={() => setSelectedTrigger(id)}
                                         >
                                             {title}
                                         </SelectItem>
@@ -78,7 +80,7 @@ export const TriggerSheet = ({
 
                     <SheetFooter>
                         <Button
-                            type="submit"
+                            type="button"
                             onClick={() => {
                                 if (!selectedTrigger) return;
                                 onSelect(selectedTrigger, metaData);
