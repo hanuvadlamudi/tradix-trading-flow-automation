@@ -28,18 +28,18 @@ import { Zap } from "lucide-react";
 
 const SUPPORTED_TRIGGERS = [{
     id: "timer-trigger" as const,
-    title: "Timer",
-    description: "Run this trigger every x sec/min",
+    title: "Schedule timer",
+    description: "Fire on a fixed interval",
 }, {
     id: "price-trigger" as const,
-    title: "Price Trigger",
-    description: "Runs whenever price goes above or below a certain threshold"
+    title: "Price threshold",
+    description: "Fire when market price crosses a level",
 }]
 
 const SUPPORTED_ASSETS = [
-    { id: "BTC", title: "BTC" },
-    { id: "ETH", title: "ETH" },
-    { id: "SOL", title: "SOL" },
+    { id: "BTC", title: "Bitcoin (BTC)" },
+    { id: "ETH", title: "Ethereum (ETH)" },
+    { id: "SOL", title: "Solana (SOL)" },
 ]
 
 export const TriggerSheet = ({
@@ -88,69 +88,67 @@ export const TriggerSheet = ({
                     </SheetTrigger>
                 </div>
 
-                <SheetContent side="right">
-                    <SheetHeader>
-
-                        <SheetTitle>Select Trigger</SheetTitle>
-
+                <SheetContent side="right" className="gap-0">
+                    <SheetHeader className="border-b border-border">
+                        <SheetTitle>Configure trigger</SheetTitle>
                         <SheetDescription>
-                            Select a trigger for your workflow.
+                            Choose how this workflow should start, then set its conditions.
                         </SheetDescription>
+                    </SheetHeader>
 
-                        <Select
-                            value={selectedTrigger ?? undefined}
-                            onValueChange={handleTriggerChange}
-                        >
-                            <SelectTrigger className="w-full">
-                                <SelectValue placeholder="Select a trigger" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectGroup>
-                                    {SUPPORTED_TRIGGERS.map(({ id, title }) => (
-                                        <SelectItem
-                                            key={id}
-                                            value={id}
-                                        >
-                                            {title}
-                                        </SelectItem>
-                                    ))}
-                                </SelectGroup>
-                            </SelectContent>
-                        </Select>
+                    <div className="flex flex-1 flex-col gap-5 overflow-y-auto p-4">
+                        <div className="flex flex-col gap-2">
+                            <Label htmlFor="trigger-type">Trigger type</Label>
+                            <Select
+                                value={selectedTrigger ?? undefined}
+                                onValueChange={handleTriggerChange}
+                            >
+                                <SelectTrigger id="trigger-type" className="w-full">
+                                    <SelectValue placeholder="Select trigger type" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectGroup>
+                                        {SUPPORTED_TRIGGERS.map(({ id, title }) => (
+                                            <SelectItem key={id} value={id}>
+                                                {title}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                            {selectedTrigger && (
+                                <p className="text-xs text-muted-foreground">
+                                    {
+                                        SUPPORTED_TRIGGERS.find((t) => t.id === selectedTrigger)
+                                            ?.description
+                                    }
+                                </p>
+                            )}
+                        </div>
 
                         {selectedTrigger === "timer-trigger" && (
-                            <div className="flex flex-col gap-2 pt-2">
-                                <Label htmlFor="timer-seconds">Every (seconds)</Label>
+                            <div className="flex flex-col gap-2">
+                                <Label htmlFor="interval-seconds">Interval (seconds)</Label>
                                 <Input
-                                    id="timer-seconds"
+                                    id="interval-seconds"
                                     type="number"
+                                    min={1}
+                                    placeholder="e.g. 3600"
                                     value={"time" in metaData ? metaData.time : 3600}
                                     onChange={(e) =>
                                         setMetaData({ time: Number(e.target.value) || 0 })
                                     }
                                 />
+                                <p className="text-xs text-muted-foreground">
+                                    How often the trigger should run. 3600 = once per hour.
+                                </p>
                             </div>
                         )}
 
                         {selectedTrigger === "price-trigger" && (
-                            <div className="flex flex-col gap-3 pt-2">
+                            <div className="flex flex-col gap-5">
                                 <div className="flex flex-col gap-2">
-                                    <Label htmlFor="price">Price</Label>
-                                    <Input
-                                        id="price"
-                                        type="number"
-                                        value={"price" in metaData ? metaData.price : 0}
-                                        onChange={(e) =>
-                                            setMetaData((prev) => ({
-                                                asset: "asset" in prev ? prev.asset : "BTC",
-                                                price: Number(e.target.value) || 0,
-                                            }))
-                                        }
-                                    />
-                                </div>
-
-                                <div className="flex flex-col gap-2">
-                                    <Label>Asset</Label>
+                                    <Label htmlFor="market-asset">Market pair</Label>
                                     <Select
                                         value={"asset" in metaData ? metaData.asset : undefined}
                                         onValueChange={(asset) =>
@@ -160,8 +158,8 @@ export const TriggerSheet = ({
                                             }))
                                         }
                                     >
-                                        <SelectTrigger className="w-full">
-                                            <SelectValue placeholder="Select an asset" />
+                                        <SelectTrigger id="market-asset" className="w-full">
+                                            <SelectValue placeholder="Select market pair" />
                                         </SelectTrigger>
                                         <SelectContent>
                                             <SelectGroup>
@@ -173,21 +171,47 @@ export const TriggerSheet = ({
                                             </SelectGroup>
                                         </SelectContent>
                                     </Select>
+                                    <p className="text-xs text-muted-foreground">
+                                        Asset whose price will be monitored.
+                                    </p>
+                                </div>
+
+                                <div className="flex flex-col gap-2">
+                                    <Label htmlFor="threshold-price">Threshold price (USD)</Label>
+                                    <Input
+                                        id="threshold-price"
+                                        type="number"
+                                        min={0}
+                                        step="0.01"
+                                        placeholder="e.g. 65000"
+                                        value={"price" in metaData ? metaData.price : 0}
+                                        onChange={(e) =>
+                                            setMetaData((prev) => ({
+                                                asset: "asset" in prev ? prev.asset : "BTC",
+                                                price: Number(e.target.value) || 0,
+                                            }))
+                                        }
+                                    />
+                                    <p className="text-xs text-muted-foreground">
+                                        Workflow starts when the market reaches this level.
+                                    </p>
                                 </div>
                             </div>
                         )}
+                    </div>
 
-                    </SheetHeader>
-
-                    <SheetFooter>
+                    <SheetFooter className="border-t border-border">
                         <Button
                             type="button"
+                            size="lg"
+                            className="w-full"
+                            disabled={!selectedTrigger}
                             onClick={() => {
                                 if (!selectedTrigger) return;
                                 onSelect(selectedTrigger, metaData);
                             }}
                         >
-                            Create Trigger
+                            Create trigger
                         </Button>
                     </SheetFooter>
                 </SheetContent>
