@@ -36,7 +36,7 @@ const SUPPORTED_TRIGGERS = [{
     description: "Fire when market price crosses a level",
 }]
 
-const SUPPORTED_ASSETS = [
+export const SUPPORTED_ASSETS = [
     { id: "BTC", title: "Bitcoin (BTC)" },
     { id: "ETH", title: "Ethereum (ETH)" },
     { id: "SOL", title: "Solana (SOL)" },

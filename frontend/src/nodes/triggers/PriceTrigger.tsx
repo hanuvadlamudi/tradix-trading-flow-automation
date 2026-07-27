@@ -16,6 +16,7 @@ export const PriceTrigger = ({data , isConnectable} :{
         <div className="p-4 border">
             {data.metaData.asset}
             {data.metaData.price}
+            
             <Handle type="source" position={Position.Right}  />
 
         </div>
