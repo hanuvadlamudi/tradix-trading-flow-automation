@@ -40,6 +40,7 @@ interface NodeType {
   },
   id: string,
   position: { x: number, y: number },
+  type?: string,
 }
 
 interface Edge{
@@ -59,7 +60,6 @@ export default function CreateWorkFlow() {
       x: number, 
       y: number },
       startingNodeId : string,
-      endingNodeId : string,
   } | null>(null);
 
   const onNodesChange: OnNodesChange = useCallback(
@@ -76,11 +76,17 @@ export default function CreateWorkFlow() {
   );
 
   const onConnectEnd = useCallback(
-    (params: any, connectionInfo: any) => {
-      if(!connectionInfo.isValid) {
-        setOpen(true);
-      }
-    }, [])
+    (_event: any, connectionInfo: any) => {
+     
+
+      if(connectionInfo.isValid || !connectionInfo.fromNode) return;
+
+      setSelectAction({
+        startingNodeId: connectionInfo.fromNode.id,
+        position: connectionInfo.to,
+      });
+      setOpen(true);
+    }, [nodes, edges])
 
   return (
     <div className="relative h-[calc(100vh-60px)] w-full bg-background">
@@ -108,21 +114,27 @@ export default function CreateWorkFlow() {
         open={open}
         onOpenChange={setOpen}
         onSelect={(kind, metaData) => {
+          if(!selectAction) return;
+
+          const id = `node-${nodes.length + 1}`;
+
           setNodes([
             ...nodes,
             {
-              id: `node-${nodes.length + 1}`,
+              id,
               type: kind,
-              position: { x: 0, y: 0 },
+              position: selectAction.position,
               data: { type: kind, kind: "action", metaData, label: kind },
             } as NodeType
           ])
 
           setEdges([...edges , {
             id: `edge-${edges.length + 1}`,
-            source: selectAction?.startingNodeId,
-            target: `${kind}-${nodes.length + 1}`,
-          } as Edge])
+            source: selectAction.startingNodeId,
+            target: id,
+          }])
+
+          setSelectAction(null);
         }}
       />
 
