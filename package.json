@@ -1,0 +1,23 @@
+{
+  "name": "tradix",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "dev:web": "turbo run dev --filter=@tradix/web",
+    "build:web": "turbo run build --filter=@tradix/web"
+  },
+  "devDependencies": {
+    "turbo": "^2.5.4"
+  },
+  "packageManager": "npm@10.9.2",
+  "engines": {
+    "node": ">=20"
+  }
+}

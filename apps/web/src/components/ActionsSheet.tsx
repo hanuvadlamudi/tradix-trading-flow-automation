@@ -1,4 +1,10 @@
-import { NodeKind } from "./CreateWorkFlow";
+import type { NodeKind, NodeMetaData, TradingMetaData } from "@tradix/common";
+import {
+  SUPPORTED_ACTIONS,
+  SUPPORTED_ASSETS,
+  TRADE_SIDES,
+  DEFAULT_TRADE_META,
+} from "@tradix/common";
 import { Button } from "./ui/button";
 import {
     Select,
@@ -17,36 +23,8 @@ import {
     SheetTitle,
 } from "@/components/ui/sheet"
 import { useState } from "react";
-import { NodeMetaData } from "./CreateWorkFlow";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { SUPPORTED_ASSETS } from "./TriggerSheet";
-import { TradingMetaData } from "@/nodes/actions/Lighter";
-
-const SUPPORTED_ACTIONS = [{
-    id: "hyper-liquid" as const,
-    title: "Hyperliquid",
-    description: "Place a trade on Hyperliquid",
-}, {
-    id: "lighter" as const,
-    title: "Lighter",
-    description: "Place a trade on Lighter",
-}, {
-    id: "backpack" as const,
-    title: "Backpack",
-    description: "Place a trade on Backpack",
-}]
-
-const TRADE_SIDES = [
-    { id: "Long" as const, title: "Long" },
-    { id: "Short" as const, title: "Short" },
-]
-
-const DEFAULT_TRADE_META: TradingMetaData = {
-    type: "Long",
-    qty: 1,
-    symbol: "BTC",
-}
 
 type ActionsSheetProps = {
     open: boolean
@@ -59,12 +37,12 @@ export const ActionsSheet = ({
     onOpenChange,
     onSelect,
 }: ActionsSheetProps) => {
-    const [metaData, setMetaData] = useState<TradingMetaData>(DEFAULT_TRADE_META);
+    const [metaData, setMetaData] = useState<TradingMetaData>({ ...DEFAULT_TRADE_META });
     const [selectedAction, setSelectedAction] = useState<NodeKind>(SUPPORTED_ACTIONS[0].id);
 
     const handleActionChange = (value: string) => {
         setSelectedAction(value as NodeKind);
-        setMetaData(DEFAULT_TRADE_META);
+        setMetaData({ ...DEFAULT_TRADE_META });
     };
 
     const showTradeFields =

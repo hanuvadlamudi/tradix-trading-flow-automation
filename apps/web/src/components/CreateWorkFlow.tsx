@@ -11,13 +11,14 @@ import {
   Background,
   Controls,
 } from '@xyflow/react';
+import type { WorkflowEdge, WorkflowNode } from '@tradix/common';
 import { TriggerSheet } from './TriggerSheet';
-import { Timer, type TimerNodeMetaData } from '@/nodes/triggers/Timer';
-import { PriceTrigger, type PriceTriggerNodeMetaData } from '@/nodes/triggers/PriceTrigger';
+import { Timer } from '@/nodes/triggers/Timer';
+import { PriceTrigger } from '@/nodes/triggers/PriceTrigger';
 import { ThemeToggle } from './ThemeToggle';
 import { useTheme } from '@/hooks/useTheme';
 import { ActionsSheet } from './ActionsSheet';
-import { Lighter, type TradingMetaData } from '@/nodes/actions/Lighter';
+import { Lighter } from '@/nodes/actions/Lighter';
 
 
 const nodeTypes = {
@@ -28,26 +29,8 @@ const nodeTypes = {
   "backpack": Lighter,
 }
 
-export type NodeKind = "price-trigger" | "timer-trigger" | "hyper-liquid" | "backpack" | "lighter";
-export type NodeMetaData = TradingMetaData | PriceTriggerNodeMetaData | TimerNodeMetaData;
-
-interface NodeType {
-  data: {
-    type: NodeKind ,
-    kind:  "action" | "trigger",
-    metaData : NodeMetaData,
-    label : string,
-  },
-  id: string,
-  position: { x: number, y: number },
-  type?: string,
-}
-
-interface Edge{
-  id : string,
-  source : string,
-  target : string,
-}
+type NodeType = WorkflowNode;
+type Edge = WorkflowEdge;
 
 
 export default function CreateWorkFlow() {
@@ -77,7 +60,7 @@ export default function CreateWorkFlow() {
 
   const onConnectEnd = useCallback(
     (_event: any, connectionInfo: any) => {
-     
+    
 
       if(connectionInfo.isValid || !connectionInfo.fromNode) return;
 

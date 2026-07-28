@@ -1,10 +1,5 @@
 import { Handle, Position } from "@xyflow/react"
-
-export type TradingMetaData = {
-   type: "Long" | "Short";
-   qty: number;
-   symbol: string;
-}
+import type { TradingMetaData } from "@tradix/common"
 
 export const Lighter = ({ data }: {
     data: {

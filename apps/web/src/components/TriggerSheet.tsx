@@ -1,4 +1,15 @@
-import { NodeKind } from "./CreateWorkFlow";
+import type {
+  NodeKind,
+  NodeMetaData,
+  TimerNodeMetaData,
+  PriceTriggerNodeMetaData,
+} from "@tradix/common";
+import {
+  SUPPORTED_TRIGGERS,
+  SUPPORTED_ASSETS,
+  DEFAULT_TIMER_META,
+  DEFAULT_PRICE_TRIGGER_META,
+} from "@tradix/common";
 import { Button } from "./ui/button";
 import {
     Select,
@@ -18,36 +29,16 @@ import {
     SheetTrigger,
 } from "@/components/ui/sheet"
 import { useState } from "react";
-import { NodeMetaData } from "./CreateWorkFlow";
-import { TimerNodeMetaData } from "@/nodes/triggers/Timer";
-import { PriceTriggerNodeMetaData } from "@/nodes/triggers/PriceTrigger";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Zap } from "lucide-react";
-
-
-const SUPPORTED_TRIGGERS = [{
-    id: "timer-trigger" as const,
-    title: "Schedule timer",
-    description: "Fire on a fixed interval",
-}, {
-    id: "price-trigger" as const,
-    title: "Price threshold",
-    description: "Fire when market price crosses a level",
-}]
-
-export const SUPPORTED_ASSETS = [
-    { id: "BTC", title: "Bitcoin (BTC)" },
-    { id: "ETH", title: "Ethereum (ETH)" },
-    { id: "SOL", title: "Solana (SOL)" },
-]
 
 export const TriggerSheet = ({
     onSelect
 }: { onSelect: (kind: NodeKind, metadata: NodeMetaData) => void }) => {
 
     const [metaData, setMetaData] = useState<TimerNodeMetaData | PriceTriggerNodeMetaData>({
-        time: 3600,
+        ...DEFAULT_TIMER_META,
     });
 
     const [selectedTrigger, setSelectedTrigger] = useState<NodeKind | null>(null);
@@ -57,9 +48,9 @@ export const TriggerSheet = ({
         setSelectedTrigger(kind);
 
         if (kind === "timer-trigger") {
-            setMetaData({ time: 3600 });
+            setMetaData({ ...DEFAULT_TIMER_META });
         } else if (kind === "price-trigger") {
-            setMetaData({ asset: "BTC", price: 0 });
+            setMetaData({ ...DEFAULT_PRICE_TRIGGER_META });
         }
     };
 
