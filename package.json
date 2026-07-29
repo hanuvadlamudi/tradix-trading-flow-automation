@@ -11,6 +11,7 @@
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "dev:web": "turbo run dev --filter=@tradix/web",
+    "dev:backend": "turbo run dev --filter=@tradix/backend",
     "build:web": "turbo run build --filter=@tradix/web"
   },
   "devDependencies": {
