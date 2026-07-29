@@ -1,19 +1,22 @@
 import { Handle, Position } from "@xyflow/react"
 import type { TradingMetaData } from "@tradix/common"
 
-export const Lighter = ({ data }: {
-    data: {
-        metaData: TradingMetaData;
-    },
-}) => {
-    return (
-        <div className="p-4 border">
-            <Handle type="target" position={Position.Left} />
-            <h1>Lighter</h1>
-            <p>Type: {data.metaData.type}</p>
-            <p>Qty: {data.metaData.qty}</p>
-            <p>Symbol: {data.metaData.symbol}</p>
-            <Handle type="source" position={Position.Right} />
-        </div>
-    )
+export function Lighter({
+  data,
+}: {
+  data: { metaData: TradingMetaData }
+}) {
+  return (
+    <div className="min-w-[160px] rounded-lg border border-border bg-card px-3 py-2.5 shadow-xs">
+      <Handle type="target" position={Position.Left} className="!size-2 !bg-foreground" />
+      <p className="text-xs text-muted-foreground">Trade</p>
+      <p className="mt-0.5 text-sm font-medium">
+        {data.metaData.type} {data.metaData.symbol}
+      </p>
+      <p className="mt-0.5 text-xs text-muted-foreground">
+        Qty {data.metaData.qty}
+      </p>
+      <Handle type="source" position={Position.Right} className="!size-2 !bg-foreground" />
+    </div>
+  )
 }
