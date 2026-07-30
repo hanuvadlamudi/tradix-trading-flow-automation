@@ -1,7 +1,8 @@
 import express from "express";
 import mongoose from "mongoose";
-import { SignUpSchema } from "@tradix/common";
+import { SignUpSchema, SignInSchema } from "@tradix/common";
 import { UserModel, WorkflowModel, NodesModel } from "@tradix/db";
+import jwt from "jsonwebtoken";
 
 mongoose.connect(process.env.MONGO_URL!);
 
@@ -35,13 +36,44 @@ app.post("/signup" , async(req,res) => {
         id: user._id,
         message: "User created successfully"
     });
-    
+
     } catch (error) {
         res.status(411).json({error: "Username already Exists"});
         return
     }
 })
 
-app.post("/signin" , (req,res) => {
+app.post("/signin" , async (req,res) => {
+    const{success, data} = SignInSchema.safeParse(req.body);
 
+    if(!success){
+        res.status(401).json({error: "Invalid credentials"});
+        return;
+    }
+
+    try {
+        const user = await UserModel.findOne({
+            username: data.username,
+            password: data.password
+        });
+
+        if(user){
+
+            const token = jwt.sign({
+                id: user._id
+            }, process.env.JWT_SECRET!, {
+                expiresIn: "1h"
+            });
+
+            res.json({
+                id: user._id,
+                token: token,
+                message: "User signed in successfully"
+            });
+        }
+        else{
+            res.status(401).json({error: "Invalid credentials"});
+        }
+    }
+    catch(error){}
 })
