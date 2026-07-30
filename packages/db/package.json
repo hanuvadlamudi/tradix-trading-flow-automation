@@ -1,0 +1,21 @@
+{
+  "name": "@tradix/db",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "exports": {
+    ".": "./index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "echo \"No lint configured for @tradix/db\""
+  },
+  "dependencies": {
+    "mongoose": "^8.16.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}
